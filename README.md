@@ -1,29 +1,64 @@
-# TS Library
+# AIForecastTS
 
-Đây là một thư viện Python mẫu để phân tích chuỗi thời gian.
+[![PyPI version](https://badge.fury.io/py/aiforecastts.svg)](https://badge.fury.io/py/aiforecastts)
+[![Tests](https://github.com/tuanthescientist/aiforecastts/actions/workflows/ci.yml/badge.svg)](https://github.com/tuanthescientist/aiforecastts/actions)
 
-## Cài đặt
+AI-powered Time Series Forecasting Library với ARIMA, decomposition, stationarity tests.
+
+## Features
+- Moving Average
+- Seasonal Decomposition
+- Stationarity Test (ADF)
+- ARIMA Forecasting
+
+## Installation
 
 ```bash
-pip install ts-library-example
+pip install aiforecastts
 ```
 
-## Sử dụng
+## Quick Start
 
 ```python
 import pandas as pd
-from ts_library import TimeSeriesAnalyzer
+from aiforecastts import TimeSeriesAnalyzer
 
-data = pd.Series([1, 2, 3, 4, 5])
+# Sample data
+data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                 index=pd.date_range('2020-01-01', periods=10))
+
 analyzer = TimeSeriesAnalyzer(data)
 
-print(analyzer.moving_average(window=3))
+# Moving average
+print(analyzer.moving_average(3))
+
+# ARIMA forecast
+forecast = analyzer.forecast_arima(steps=5)
+print(forecast)
+
+# Check stationarity
+print(analyzer.is_stationary())
 ```
 
-## Phát triển
-
-Để cài đặt môi trường phát triển:
+## Development
 
 ```bash
-pip install -e .
+git clone https://github.com/tuanthescientist/aiforecastts
+cd aiforecastts
+pip install -e .[dev]
+pytest tests/
+black .
+ruff check .
+```
+
+## Build & Publish
+
+```bash
+python -m build
+twine upload dist/*
+```
+
+## GitHub
+
+[tuanthescientist/aiforecastts](https://github.com/tuanthescientist/aiforecastts)
 ```
