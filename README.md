@@ -21,7 +21,7 @@ pip install aiforecastts
 
 ```python
 import pandas as pd
-from aiforecastts import TimeSeriesAnalyzer
+from aiforecastts import TimeSeriesAnalyzer, SuperForecaster
 
 # Sample data
 data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
@@ -38,6 +38,16 @@ print(forecast)
 
 # Check stationarity
 print(analyzer.is_stationary())
+
+# SuperForecaster (ensemble Prophet + AutoARIMA + XGBoost)
+series = pd.Series(
+    range(1, 121),
+    index=pd.date_range('2020-01-01', periods=120)
+)
+forecaster = SuperForecaster(series)
+metrics = forecaster.fit_ensemble(train_size=0.8)
+print(metrics['mae'])
+print(forecaster.predict(steps=7))
 ```
 
 ## Development

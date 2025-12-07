@@ -3,7 +3,6 @@ import numpy as np
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.seasonal import seasonal_decompose
-import yfinance as yf
 import ta
 from prophet import Prophet
 from pmdarima import auto_arima
@@ -86,12 +85,6 @@ class SuperForecaster(TimeSeriesAnalyzer):
         self.scaler = StandardScaler()
         self.is_fitted = False
 
-    def fetch_data(self, ticker: str, period: str = "2y") -> pd.Series:
-        """Fetch OHLCV data from Yahoo Finance."""
-        df = yf.download(ticker, period=period)['Close']
-        self.data = df
-        return df
-
     def add_features(self, lags: int = 14) -> pd.DataFrame:
         """Engineer features: lags, rolling stats, TA indicators."""
         df = pd.DataFrame({'y': self.data})
@@ -111,14 +104,21 @@ class SuperForecaster(TimeSeriesAnalyzer):
         X_train, y_train = features.iloc[:split].drop('y', axis=1), features.iloc[:split]['y']
         X_test, y_test = features.iloc[split:].drop('y', axis=1), features.iloc[split:]['y']
 
-        # Prophet
-        prophet_df = self.data.reset_index().rename(columns={'index': 'ds', 'Close': 'y' if 'Close' in self.data.name else 'y'})
+        # Prophet requires columns ds, y
+        prophet_df = self.data.reset_index()
+        prophet_df.columns = ['ds', 'y']
         m_prophet = Prophet().fit(prophet_df.iloc[:split])
         future_prophet = m_prophet.make_future_dataframe(periods=len(y_test))
         forecast_prophet = m_prophet.predict(future_prophet)['yhat'].iloc[-len(y_test):]
 
         # AutoARIMA
-        arima_model = auto_arima(y_train, seasonal=True, stepwise=True, suppress_warnings=True)
+        arima_model = auto_arima(
+            y_train,
+            seasonal=False,
+            stepwise=True,
+            suppress_warnings=True,
+            error_action="ignore",
+        )
         forecast_arima = arima_model.predict(n_periods=len(y_test))
 
         # XGBoost
