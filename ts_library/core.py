@@ -16,22 +16,22 @@ warnings.filterwarnings('ignore')
 class TimeSeriesAnalyzer:
     def __init__(self, data):
         """
-        Khởi tạo TimeSeriesAnalyzer.
+        Initialize TimeSeriesAnalyzer.
 
         Args:
-            data (pd.Series hoặc pd.DataFrame): Dữ liệu chuỗi thời gian.
+            data (pd.Series or pd.DataFrame): Time series data.
         """
         self.data = data
 
     def moving_average(self, window=3):
         """
-        Tính trung bình động (Moving Average).
+        Compute Moving Average.
 
         Args:
-            window (int): Kích thước cửa sổ.
+            window (int): Window size.
 
         Returns:
-            pd.Series: Kết quả trung bình động.
+            pd.Series: Moving average result.
         """
         return self.data.rolling(window=window).mean()
 
