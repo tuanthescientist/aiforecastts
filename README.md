@@ -3,13 +3,14 @@
 [![PyPI version](https://badge.fury.io/py/aiforecastts.svg)](https://badge.fury.io/py/aiforecastts)
 [![Tests](https://github.com/tuanthescientist/aiforecastts/actions/workflows/ci.yml/badge.svg)](https://github.com/tuanthescientist/aiforecastts/actions)
 
-AI-powered Time Series Forecasting Library với ARIMA, decomposition, stationarity tests.
+Thuộc dự án **AI Forecast** của **aiconsultant.org**. Thư viện dự báo chuỗi thời gian với ARIMA, decomposition, kiểm định dừng, và ensemble Prophet + AutoARIMA + XGBoost.
 
 ## Features
-- Moving Average
-- Seasonal Decomposition
+- Moving Average, thống kê mô tả nhanh
+- Seasonal Decomposition (trend/seasonal/residual)
 - Stationarity Test (ADF)
 - ARIMA Forecasting
+- **SuperForecaster**: Ensemble (Prophet + AutoARIMA + XGBoost) với feature engineering (lags, rolling stats, RSI, MACD, Bollinger)
 
 ## Installation
 
@@ -24,31 +25,22 @@ import pandas as pd
 from aiforecastts import TimeSeriesAnalyzer, SuperForecaster
 
 # Sample data
-data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
-                 index=pd.date_range('2020-01-01', periods=10))
+data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], index=pd.date_range('2020-01-01', periods=10))
 
 analyzer = TimeSeriesAnalyzer(data)
-
-# Moving average
-print(analyzer.moving_average(3))
-
-# ARIMA forecast
-forecast = analyzer.forecast_arima(steps=5)
-print(forecast)
-
-# Check stationarity
-print(analyzer.is_stationary())
+print(analyzer.moving_average(3))          # MA
+print(analyzer.forecast_arima(steps=5))    # ARIMA
+print(analyzer.is_stationary())            # ADF
 
 # SuperForecaster (ensemble Prophet + AutoARIMA + XGBoost)
-series = pd.Series(
-    range(1, 121),
-    index=pd.date_range('2020-01-01', periods=120)
-)
+series = pd.Series(range(1, 121), index=pd.date_range('2020-01-01', periods=120))
 forecaster = SuperForecaster(series)
 metrics = forecaster.fit_ensemble(train_size=0.8)
 print(metrics['mae'])
 print(forecaster.predict(steps=7))
 ```
+
+**Lưu ý dữ liệu**: Thư viện không tự kéo dữ liệu (không dùng yfinance); bạn cần cung cấp dữ liệu (CSV, API, v.v.).
 
 ## Development
 
@@ -56,9 +48,9 @@ print(forecaster.predict(steps=7))
 git clone https://github.com/tuanthescientist/aiforecastts
 cd aiforecastts
 pip install -e .[dev]
-pytest tests/
+python -m unittest discover -v tests
+ruff check . --fix
 black .
-ruff check .
 ```
 
 ## Build & Publish
@@ -68,7 +60,8 @@ python -m build
 twine upload dist/*
 ```
 
-## GitHub
+## Liên hệ / GitHub
 
-[tuanthescientist/aiforecastts](https://github.com/tuanthescientist/aiforecastts)
+- Repo: https://github.com/tuanthescientist/aiforecastts
+- Dự án: https://aiconsultant.org (AI Forecast)
 ```
