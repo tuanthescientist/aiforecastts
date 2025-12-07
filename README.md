@@ -3,14 +3,14 @@
 [![PyPI version](https://badge.fury.io/py/aiforecastts.svg)](https://badge.fury.io/py/aiforecastts)
 [![Tests](https://github.com/tuanthescientist/aiforecastts/actions/workflows/ci.yml/badge.svg)](https://github.com/tuanthescientist/aiforecastts/actions)
 
-Thuộc dự án **AI Forecast** của **aiconsultant.org**. Thư viện dự báo chuỗi thời gian với ARIMA, decomposition, kiểm định dừng, và ensemble Prophet + AutoARIMA + XGBoost.
+This project is part of **AI Forecast** at **aiconsultant.org**. AIForecastTS is a practical Python library for time series analysis and forecasting — it includes classic utilities (moving average, seasonal decomposition, stationarity testing, ARIMA) and a higher-level ensemble forecaster (SuperForecaster) that combines Prophet, AutoARIMA, and XGBoost.
 
 ## Features
-- Moving Average, thống kê mô tả nhanh
-- Seasonal Decomposition (trend/seasonal/residual)
-- Stationarity Test (ADF)
-- ARIMA Forecasting
-- **SuperForecaster**: Ensemble (Prophet + AutoARIMA + XGBoost) với feature engineering (lags, rolling stats, RSI, MACD, Bollinger)
+- Time series exploration utilities (moving averages, descriptive statistics)
+- Seasonal decomposition (trend / seasonal / residual)
+- Stationarity tests (ADF)
+- ARIMA forecasting utilities
+- SuperForecaster: an ensemble that trains Prophet, AutoARIMA and XGBoost with feature engineering (lags, rolling stats, RSI, MACD, Bollinger bands)
 
 ## Installation
 
@@ -40,7 +40,7 @@ print(metrics['mae'])
 print(forecaster.predict(steps=7))
 ```
 
-**Lưu ý dữ liệu**: Thư viện không tự kéo dữ liệu (không dùng yfinance); bạn cần cung cấp dữ liệu (CSV, API, v.v.).
+**Important**: This library does not fetch market data automatically. Please provide your own time series (CSV files, data APIs or a DataFrame) when using TimeSeriesAnalyzer or SuperForecaster.
 
 ## Development
 
@@ -60,8 +60,8 @@ python -m build
 twine upload dist/*
 ```
 
-## Liên hệ / GitHub
+## Contact / project
 
-- Repo: https://github.com/tuanthescientist/aiforecastts
-- Dự án: https://aiconsultant.org (AI Forecast)
+- Repository: https://github.com/tuanthescientist/aiforecastts
+- Project: https://aiconsultant.org (AI Forecast)
 ```
