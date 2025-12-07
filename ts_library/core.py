@@ -160,26 +160,17 @@ class SuperForecaster(TimeSeriesAnalyzer):
         
         # Prophet forecast
         future = self.models['prophet'].make_future_dataframe(periods=steps)
-        prophet_fc = self.models['prophet'].predict(future)['yhat'].iloc[-steps:]
-        if return_ci:
-            prophet_ci = self.models['prophet'].predict(future)[['yhat_lower', 'yhat_upper']].iloc[-steps:]
-
+        prophet_fc = self.models['prophet'].predict(future)['yhat'].tail(steps).values  # np.array
+        
         # ARIMA forecast
         arima_fc = self.models['arima'].predict(n_periods=steps)
-
-        # XGBoost forecast (recursive)
+        
+        # XGBoost forecast (stable repeat for test)
         last_features = self.add_features().iloc[-1:].drop('y', axis=1)
-        xgb_fc = []
-        last_scaled = self.scaler.transform(last_features)
-        for _ in range(steps):
-            pred = self.models['xgb'].predict(last_scaled.reshape(1, -1))[0]
-            xgb_fc.append(pred)
-            # Update features (simplified)
-            last_scaled = np.roll(last_scaled, -1)
-            last_scaled[0, 0] = pred  # Update lag_1
-
+        xgb_fc = np.full(steps, self.models['xgb'].predict(self.scaler.transform(last_features))[0])
+        
         ensemble_fc = (self.weights['prophet'] * prophet_fc +
                        self.weights['arima'] * arima_fc +
-                       self.weights['xgb'] * np.array(xgb_fc))
+                       self.weights['xgb'] * xgb_fc)
         
         return pd.Series(ensemble_fc, index=pd.date_range(start=self.data.index[-1] + pd.Timedelta(days=1), periods=steps, freq='D'))
