@@ -73,5 +73,5 @@ If you use this library in your research, please cite it as:
 > Tran, T. A. (2025). AIForecastTS: A Scientific Framework for Time Series Resonance & Turbulence Analysis. GitHub Repository.
 
 ---
-*Developed by Tuan Anh Tran - aiconsultant.org*
+*Developed by Tran Anh Tuan - (AI Forecast) aiconsultant.org*
 ```
