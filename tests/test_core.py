@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from ts_library.core import TimeSeriesAnalyzer, SuperForecaster
+from aiforecastts.core import TimeSeriesAnalyzer, SuperForecaster
 
 
 class TestTimeSeriesAnalyzer(unittest.TestCase):
@@ -18,7 +18,10 @@ class TestTimeSeriesAnalyzer(unittest.TestCase):
         self.assertEqual(ma.iloc[2], 2.0)
 
     def test_decompose(self):
-        data = pd.Series([1, 2, 3, 1, 2, 3, 1, 2, 3], index=pd.date_range("2020", periods=9, freq="ME"))
+        data = pd.Series(
+            [1, 2, 3, 1, 2, 3, 1, 2, 3],
+            index=pd.date_range("2020", periods=9, freq="ME"),
+        )
         analyzer = TimeSeriesAnalyzer(data)
         result = analyzer.decompose(period=3)
         self.assertIsNotNone(result.trend)
@@ -31,7 +34,7 @@ class TestTimeSeriesAnalyzer(unittest.TestCase):
     def test_forecast_arima(self):
         data = pd.Series([1, 2, 3, 4, 5])
         analyzer = TimeSeriesAnalyzer(data)
-        forecast = analyzer.forecast_arima(steps=3, order=(1,0,0))
+        forecast = analyzer.forecast_arima(steps=3, order=(1, 0, 0))
         self.assertEqual(len(forecast), 3)
         self.assertTrue(all(isinstance(x, (int, float)) for x in forecast))
 
@@ -45,10 +48,10 @@ class TestSuperForecaster(unittest.TestCase):
         np.random.seed(42)
         self.forecaster.data = pd.Series(
             np.cumsum(np.random.randn(120)),
-            index=pd.date_range('2020-01-01', periods=120, freq='D')
+            index=pd.date_range("2020-01-01", periods=120, freq="D"),
         )
         metrics = self.forecaster.fit_ensemble(train_size=0.8)
-        self.assertIn('mae', metrics)
+        self.assertIn("mae", metrics)
         pred = self.forecaster.predict(steps=5)
         self.assertEqual(len(pred), 5)
         self.assertTrue(pred.index.is_monotonic_increasing)

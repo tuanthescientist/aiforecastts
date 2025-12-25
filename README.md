@@ -1,67 +1,77 @@
-# AIForecastTS
+# AIForecastTS: A Scientific Framework for Time Series Resonance & Turbulence Analysis
 
 [![PyPI version](https://badge.fury.io/py/aiforecastts.svg)](https://badge.fury.io/py/aiforecastts)
-[![Tests](https://github.com/tuanthescientist/aiforecastts/actions/workflows/ci.yml/badge.svg)](https://github.com/tuanthescientist/aiforecastts/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This project is part of **AI Forecast** at **aiconsultant.org**. AIForecastTS is a practical Python library for time series analysis and forecasting — it includes classic utilities (moving average, seasonal decomposition, stationarity testing, ARIMA) and a higher-level ensemble forecaster (SuperForecaster) that combines Prophet, AutoARIMA, and XGBoost.
+## 1. Abstract
+AIForecastTS is a high-performance scientific library designed to bridge the gap between classical signal processing and modern machine learning. At its core, the library introduces the **Harmonic-Gradient Resonance (HGR)** algorithm, a novel approach that mathematically decomposes time series into deterministic physical components (Resonance) and stochastic dynamical components (Turbulence). Integrated with **Gemini 3 Flash Preview**, it provides an automated AI Research Agent capable of interpreting complex temporal patterns.
 
-## Features
-- Time series exploration utilities (moving averages, descriptive statistics)
-- Seasonal decomposition (trend / seasonal / residual)
-- Stationarity tests (ADF)
-- ARIMA forecasting utilities
-- SuperForecaster: an ensemble that trains Prophet, AutoARIMA and XGBoost with feature engineering (lags, rolling stats, RSI, MACD, Bollinger bands)
+## 2. Theoretical Framework: The HGR Algorithm
+Traditional forecasting often fails by treating signal and noise as a monolithic entity. HGR operates on the principle of **Dual-Component Decomposition**:
 
-## Installation
+### 2.1. Resonance Module (Deterministic Physics)
+The Resonance module assumes that every time series contains underlying periodicities driven by systemic cycles.
+- **Spectral Identification**: Uses Fast Fourier Transform (FFT) to map the series into the frequency domain.
+- **Harmonic Regression**: Selects the top $K$ dominant frequencies and reconstructs the signal using a basis of sine and cosine functions:
+  $$y_{res}(t) = \sum_{i=1}^{K} [a_i \sin(\omega_i t) + b_i \cos(\omega_i t)]$$
+- **Purpose**: Captures long-term trends and seasonal cycles with mathematical precision.
+
+### 2.2. Turbulence Module (Stochastic Dynamics)
+The residuals from the Resonance module ($y - y_{res}$) represent "Turbulence" — the chaotic, non-linear interactions of the system.
+- **Temporally-Weighted Gradient Boosting**: Employs a modified XGBoost architecture where training samples are weighted by their temporal proximity:
+  $$W(t) = \alpha + \beta \cdot \frac{t}{T}$$
+- **Recursive Stochastic Mapping**: Models the short-term dependencies and volatility clusters within the noise.
+
+## 3. Architecture & Modules
+
+### 3.1. Advanced Analytics (`aiforecastts.analytics`)
+- **DataProcessor**: Implements time-aware interpolation and rigorous stationarity testing (Augmented Dickey-Fuller).
+- **FeatureEngineer**: Automated generation of high-dimensional feature spaces, including multi-scale lags and technical indicators (RSI, MACD, Bollinger Bands).
+
+### 3.2. AI Research Agent (`aiforecastts.agents`)
+Powered by **Gemini 3 Flash Preview**, the agent acts as an automated peer-reviewer. It analyzes the mathematical outputs of the HGR algorithm and generates a scientific synthesis, explaining the interaction between systemic resonance and market turbulence.
+
+## 4. Installation & Setup
 
 ```bash
 pip install aiforecastts
 ```
 
-## Quick Start
+## 5. Scientific Workflow Example
 
 ```python
 import pandas as pd
-from aiforecastts import TimeSeriesAnalyzer, SuperForecaster
+from aiforecastts import TimeSeriesResearch
 
-# Sample data
-data = pd.Series([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], index=pd.date_range('2020-01-01', periods=10))
+# Load dataset (e.g., Financial or Sensor data)
+df = pd.read_csv("data.csv", index_col='timestamp', parse_dates=True)
 
-analyzer = TimeSeriesAnalyzer(data)
-print(analyzer.moving_average(3))          # MA
-print(analyzer.forecast_arima(steps=5))    # ARIMA
-print(analyzer.is_stationary())            # ADF
+# Initialize the Research Pipeline
+research = TimeSeriesResearch(df, target_col='target')
 
-# SuperForecaster (ensemble Prophet + AutoARIMA + XGBoost)
-series = pd.Series(range(1, 121), index=pd.date_range('2020-01-01', periods=120))
-forecaster = SuperForecaster(series)
-metrics = forecaster.fit_ensemble(train_size=0.8)
-print(metrics['mae'])
-print(forecaster.predict(steps=7))
+# Execute Full Analysis with Gemini 3 Flash Agent
+results = research.run_full_analysis(
+    agent_query="Analyze the resonance-turbulence interaction and assess forecast stability.",
+    api_key="YOUR_GEMINI_API_KEY"
+)
+
+# Access Scientific Report
+print(results['agent_report'])
+
+# Access Mathematical Forecast
+forecast_df = results['forecast']
+print(forecast_df[['resonance', 'turbulence', 'hgr_forecast']])
 ```
 
-**Important**: This library does not fetch market data automatically. Please provide your own time series (CSV files, data APIs or a DataFrame) when using TimeSeriesAnalyzer or SuperForecaster.
+## 6. Future Research Directions
+- Integration of Quantum-inspired optimization for frequency selection.
+- Support for Multi-variate HGR (MV-HGR) to capture cross-series correlations.
+- Real-time streaming analytics for high-frequency turbulence monitoring.
 
-## Development
+## 7. Citation
+If you use this library in your research, please cite it as:
+> Tran, T. A. (2025). AIForecastTS: A Scientific Framework for Time Series Resonance & Turbulence Analysis. GitHub Repository.
 
-```bash
-git clone https://github.com/tuanthescientist/aiforecastts
-cd aiforecastts
-pip install -e .[dev]
-python -m unittest discover -v tests
-ruff check . --fix
-black .
-```
-
-## Build & Publish
-
-```bash
-python -m build
-twine upload dist/*
-```
-
-## Contact / project
-
-- Repository: https://github.com/tuanthescientist/aiforecastts
-- Project: https://aiconsultant.org (AI Forecast)
+---
+*Developed by Tuan Anh Tran - aiconsultant.org*
 ```

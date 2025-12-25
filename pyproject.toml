@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aiforecastts"
-version = "0.1.0"
+version = "0.3.0"
 authors = [{ name = "Tuan Anh Tran", email = "tuanthescientist@gmail.com" }]
-description = "AI-powered Time Series Forecasting Library"
+description = "Scientific AI-powered Time Series Research Library"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering",
@@ -29,14 +29,12 @@ dependencies = [
     "scikit-learn>=1.3",
     "ta>=0.11",
     "joblib>=1.3",
+    "google-generativeai>=0.3",
 ]
 
 [project.urls]
 Homepage = "https://github.com/tuanthescientist/aiforecastts"
 "Bug Tracker" = "https://github.com/tuanthescientist/aiforecastts/issues"
-
-[tool.setuptools.packages.find]
-where = ["ts_library"]
 
 [project.optional-dependencies]
 dev = [
@@ -46,3 +44,6 @@ dev = [
     "build",
     "twine",
 ]
+
+[tool.setuptools]
+packages = ["aiforecastts"]
