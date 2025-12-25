@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aiforecastts"
-version = "0.3.0"
-authors = [{ name = "Tran Anh Tuan", email = "tuanthescientist@gmail.com" }]
+version = "0.3.2"
+authors = [{ name = "Tuan Anh Tran", email = "tuanthescientist@gmail.com" }]
 description = "Scientific AI-powered Time Series Research Library"
 readme = "README.md"
 license = { text = "MIT" }
