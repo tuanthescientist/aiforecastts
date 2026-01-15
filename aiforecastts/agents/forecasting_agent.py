@@ -21,27 +21,53 @@ class AIForecastAgent:
         self.processor = DataProcessor()
         self.model = HarmonicGradientResonance()
 
-    def analyze_and_forecast(self, df: pd.DataFrame, target_col: str, query: str):
+    def analyze_and_forecast(
+        self,
+        df: pd.DataFrame,
+        target_col: str,
+        query: str,
+        forecast: pd.DataFrame = None,
+        model_label: str = "HGR",
+    ):
         """
         The agent interprets the user's query, performs analysis, and returns a scientific report.
         """
         # 1. Data Analysis
         stats = self.processor.check_stationarity(df[target_col])
         
-        # 2. Forecasting
-        self.model.fit(df, target_col)
-        forecast = self.model.predict(steps=7, last_df=df)
+        # 2. Forecasting (optional if provided externally)
+        if forecast is None:
+            self.model.fit(df, target_col)
+            forecast = self.model.predict(steps=7, last_df=df)
         
         # 3. LLM Interpretation
+        # Build contextual forecast text
+        forecast_lines = []
+        if "ensemble_forecast" in forecast.columns:
+            forecast_lines.append(
+                f"Ensemble Forecast (next steps): {forecast['ensemble_forecast'].tolist()}"
+            )
+        if "hgr_forecast" in forecast.columns:
+            forecast_lines.append(
+                f"HGR Forecast (next steps): {forecast['hgr_forecast'].tolist()}"
+            )
+        if "resonance" in forecast.columns:
+            forecast_lines.append(
+                f"Resonance Component: {forecast['resonance'].tolist()}"
+            )
+        if "turbulence" in forecast.columns:
+            forecast_lines.append(
+                f"Turbulence Component: {forecast['turbulence'].tolist()}"
+            )
+
+        forecast_block = "\n".join(forecast_lines) if forecast_lines else "No forecast details available."
+
         prompt = f"""
         You are a Senior Data Scientist. Analyze the following time series results and answer the user's query.
         
         Data Statistics: {stats}
-        Forecast (next 7 steps) using HGR (Harmonic-Gradient Resonance) Algorithm: 
-        {forecast['hgr_forecast'].tolist()}
-        
-        Resonance Component (Physics/Trend): {forecast['resonance'].tolist()}
-        Turbulence Component (Stochastic/Noise): {forecast['turbulence'].tolist()}
+        Model Used: {model_label}
+        {forecast_block}
         
         User Query: {query}
         

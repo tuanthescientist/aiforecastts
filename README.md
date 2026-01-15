@@ -4,23 +4,27 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 1. Abstract
-AIForecastTS is a high-performance scientific library designed to bridge the gap between classical signal processing and modern machine learning. At its core, the library introduces the **Harmonic-Gradient Resonance (HGR)** algorithm, a novel approach that mathematically decomposes time series into deterministic physical components (Resonance) and stochastic dynamical components (Turbulence). Integrated with **Gemini 3 Flash Preview**, it provides an automated AI Research Agent capable of interpreting complex temporal patterns.
+AIForecastTS is a high-performance scientific library designed to bridge the gap between classical signal processing and modern machine learning. At its core, the library introduces the **Harmonic-Gradient Resonance (HGR)** algorithm and the **Scientific Ensemble** framework. Integrated with **Gemini 3 Flash Preview**, it provides an automated AI Research Agent capable of interpreting complex temporal patterns.
 
-## 2. Theoretical Framework: The HGR Algorithm
+## 2. Theoretical Framework
+
+### 2.1. Harmonic-Gradient Resonance (HGR)
 Traditional forecasting often fails by treating signal and noise as a monolithic entity. HGR operates on the principle of **Dual-Component Decomposition**:
 
-### 2.1. Resonance Module (Deterministic Physics)
+#### Resonance Module (Deterministic Physics)
 The Resonance module assumes that every time series contains underlying periodicities driven by systemic cycles.
 - **Spectral Identification**: Uses Fast Fourier Transform (FFT) to map the series into the frequency domain.
 - **Harmonic Regression**: Selects the top $K$ dominant frequencies and reconstructs the signal using a basis of sine and cosine functions:
   $$y_{res}(t) = \sum_{i=1}^{K} [a_i \sin(\omega_i t) + b_i \cos(\omega_i t)]$$
-- **Purpose**: Captures long-term trends and seasonal cycles with mathematical precision.
 
-### 2.2. Turbulence Module (Stochastic Dynamics)
+#### Turbulence Module (Stochastic Dynamics)
 The residuals from the Resonance module ($y - y_{res}$) represent "Turbulence" — the chaotic, non-linear interactions of the system.
-- **Temporally-Weighted Gradient Boosting**: Employs a modified XGBoost architecture where training samples are weighted by their temporal proximity:
-  $$W(t) = \alpha + \beta \cdot \frac{t}{T}$$
-- **Recursive Stochastic Mapping**: Models the short-term dependencies and volatility clusters within the noise.
+
+### 2.2. Scientific Ensemble (New in v0.3.3)
+For maximum robustness, the library now includes a weighted ensemble architecture that combines:
+- **Facebook Prophet**: For industry-standard trend and seasonality tracking.
+- **HGR Algorithm**: For specialized physics-based frequency analysis.
+The ensemble dynamically stabilizes predictions by averaging the deterministic physicist view (HGR) with the Bayesian probabilistic view (Prophet), and can auto-tune weights on a validation window.
 
 ## 3. Architecture & Modules
 
@@ -47,12 +51,13 @@ from aiforecastts import TimeSeriesResearch
 df = pd.read_csv("data.csv", index_col='timestamp', parse_dates=True)
 
 # Initialize the Research Pipeline
-research = TimeSeriesResearch(df, target_col='target')
+research = TimeSeriesResearch(df, target_col='target', model_type='ensemble')
 
 # Execute Full Analysis with Gemini 3 Flash Agent
 results = research.run_full_analysis(
     agent_query="Analyze the resonance-turbulence interaction and assess forecast stability.",
-    api_key="YOUR_GEMINI_API_KEY"
+  api_key="YOUR_GEMINI_API_KEY",
+  steps=7
 )
 
 # Access Scientific Report
