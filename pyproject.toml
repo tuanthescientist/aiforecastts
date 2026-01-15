@@ -46,4 +46,7 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["aiforecastts"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aiforecastts*"]
